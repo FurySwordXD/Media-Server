@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}
+Media Server
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        {% include 'directory.html' %}
+        <div class="row">   
+            <div class="col-lg-3">
+                <div class="p-3">
+                <div class="d-flex justify-content-between">
+                    <h3 class="my-auto">{{folder.name}}</h3>
+                    {% if user == folder.owner %}
+                    <a class="btn text-primary p-1" onclick="contextMenu(event, 'Folder', '{% url 'update-folder' folder.pk %}', '{% url 'delete-folder' folder.pk %}')">
+                        <i class="fa fa-cogs file" style="border: 0px solid;"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                <br><br>
+                {% if folder.folder_set.all %}
+                    <h4>Folders</h4>
+                    {% for f in folder.folder_set.all %}
+                        <a class="btn btn-outline-primary file" href="{% url 'folder-detail' f.id %}">{{ f.name }}</a>
+                    {% endfor %}
+                    <br><br>
+                {% endif %}
+
+                <div class="btn-group">
+                    <a onclick="formModal('Add File', '{% url 'add-file' folder.id %}')" class="btn btn-info text-light m-1" >Add File</a>
+                    <a onclick="formModal('Create Folder', '{% url 'add-folder' folder.id %}')" class="btn btn-info text-light m-1">Add Folder</a>
+                </div>
+                <br><br>
+                <a href="#"><button class="btn btn-primary">Download Folder</button></a>
+            </div>
+            </div>
+            
+            <div class="col-lg-9">     
+                <div class="container">
+                <h4>Videos</h4>
+                {% for file in folder.file_set.all %}
+                    {% if file.file_type == 'Video' %}
+                    <a class="btn btn-outline-primary file" href="{% url 'file-detail' file.pk %}" oncontextmenu="contextMenu(event, 'File', '{% url 'update-file' file.pk %}', '{% url 'delete-file' file.pk %}')">{{ file }}</a>
+                    {% endif %}
+                {% endfor %}
+                </div>
+                <hr>
+                
+                <div class="container">
+                <h4>Audio</h4>
+                {% for file in folder.file_set.all %}
+                    {% if file.file_type == 'Audio' %}
+                    <a class="btn btn-outline-primary file" href="{% url 'file-detail' file.id %}" oncontextmenu="contextMenu(event, 'File', '{% url 'update-file' file.pk %}', '{% url 'delete-file' file.pk %}')">{{ file }}</a>
+                    {% endif %}
+                {% endfor %}
+                </div>
+                <hr>
+                
+                <div class="container">
+                <h4>Images</h4>
+                <div class="row">
+                {% for file in folder.file_set.all %}
+                    {% if file.file_type == 'Image' %}
+                        <a class="btn btn-outline-primary file col-md-3 p-3" href="{% url 'file-detail' file.id %}" oncontextmenu="contextMenu(event, 'File', '{% url 'update-file' file.pk %}', '{% url 'delete-file' file.pk %}')">
+                            <img src="{{ file.file.url }}" class="img-fluid img-thumbnail" style="max-width:100%;">
+                            <p class="trunc" style="width: 80%;">{{file}}</p>
+                        </a>
+                        
+                    {% endif %}
+                {% endfor %}
+                </div>
+                </div>
+                <hr>
+
+                <div class="container">
+                <h4>Files/Text</h4>
+                {% for file in folder.file_set.all %}
+                    {% if file.file_type == 'Text' %}
+                    <a class="btn btn-outline-primary file" href="{% url 'file-detail' file.id %}" oncontextmenu="contextMenu(event, 'File', '{% url 'update-file' file.pk %}', '{% url 'delete-file' file.pk %}')">{{ file }}</a>
+                    {% endif %}
+                {% endfor %}
+                </div>
+                <hr>
+
+                <div class="container">
+                <h4>Files/Binary</h4>
+                {% for file in folder.file_set.all %}
+                    {% if file.file_type == 'File' %}
+                    <a class="btn btn-outline-primary file" href="{% url 'file-detail' file.id %}" oncontextmenu="contextMenu(event, 'File', '{% url 'update-file' file.pk %}', '{% url 'delete-file' file.pk %}')">{{ file }}</a>
+                    {% endif %}
+                {% endfor %}
+                </div>
+                <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="list-group" id="menu" style="position: absolute; display: none;">
+        <li class="list-group-item btn btn-secondary" onclick="editObject()">Edit</li>
+        <li class="list-group-item btn btn-secondary" onclick="deleteObject()">Delete</li>
+    </div>
+
+    <script>
+        let menuOptions = {};
+
+        function editObject()
+        {
+            formModal("Edit " + menuOptions.title, menuOptions.edit_url)
+        }
+        function deleteObject()
+        {
+            formModal("Delete " + menuOptions.title, menuOptions.delete_url)
+        }
+        function contextMenu(event, title, edit_url, delete_url)
+        {   
+            event.preventDefault();
+            $("#menu").css('left', event.pageX);
+            $("#menu").css('top', event.pageY);
+            $("#menu").show()
+            menuOptions.title = title;
+            menuOptions.edit_url = edit_url;
+            menuOptions.delete_url = delete_url;
+        }
+
+        if (document.addEventListener) { 
+            document.addEventListener('contextmenu', function(e) {               
+                if(!$(e.target).hasClass("file"))
+                    $("#menu").hide();
+            });
+            document.addEventListener('click', function(e) {
+                if(!$(e.target).hasClass("file"))
+                    $("#menu").hide();
+                return true;
+            });
+        }
+    </script>
+{% endblock %}

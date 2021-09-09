@@ -1,0 +1,70 @@
+{% load template_tags %}
+
+{% if form.non_field_errors %}
+    <div class="alert alert-danger alert-dismissible fade show" role='alert'>
+        {{form.non_field_errors}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+{% endif %}
+
+{% for field in form %}
+{% for error in field.errors %}
+    <div class="alert alert-danger alert-dismissible fade show" role='alert'>
+        {{field.label}} : {{ error }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endfor %}
+{% endfor %}
+{% if messages %}
+{% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role='alert'>
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endfor %}
+
+{% endif %}
+
+{% for field in form.visible_fields %}
+    <div class="form-group">
+
+        {{ field.label_tag }}<br>
+
+        {% if field|field_type == 'Select' %}
+            {% add_attr field class='form-control' as field %}
+        {% elif field|field_type == 'CheckboxInput' %}
+            {% add_attr field class='form-check-inline ml-3' placeholder=field.label  as field %}
+        {% elif field|field_type == 'FileInput' %}
+            {% add_attr field class='form-control-file' placeholder=field.label  as field %}
+        {% else %}
+            {% add_attr field class='form-control' placeholder=field.label  as field %}
+        {% endif %}
+
+        {{ field }}
+
+    </div>
+  
+{% endfor %}
+{% for field in form.hidden_fields %}
+    {{ field }}
+{% endfor %}
+{% block style %}
+  <style>
+        input[type=checkbox]
+        {
+            /* Double-sized Checkboxes */
+            -ms-transform: scale(2); /* IE */
+            -moz-transform: scale(2); /* FF */
+            -webkit-transform: scale(2); /* Safari and Chrome */
+            -o-transform: scale(2); /* Opera */
+            padding: 10px;
+        }
+    </style>
+{% endblock style %}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>{% block title %} {% endblock %}</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.2.1/lux/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+    
+
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            height: 100%;
+        }
+        #container {
+            min-height: 100%;
+            padding-bottom: 20px;
+        }
+        #main {
+            overflow: auto;
+        }
+        footer {
+            background-color: rgb(0, 128, 128);
+            position: relative;
+            margin-top: -30px;
+            height: 30px;
+            clear: both;
+            padding: .3rem;
+            text-align: center;
+            color: white;
+        }
+
+        #container {
+            background-image: url('http://cfy.ksu.edu.sa/sites/all/themes/ksu_py/skins/red/red.general-boxed-bg-image.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        a { 
+            cursor: pointer; 
+        }
+        a:link {
+            text-decoration: none;
+        }
+
+        a:visited {
+            text-decoration: none;
+        }
+
+        button { outline: none; }
+        
+        ::-webkit-scrollbar {
+        width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+        background:rgb(150,150,150); 
+        }
+
+        ::-webkit-scrollbar-thumb {
+        background: rgb(100,100,100); 
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+        background: rgb(50,50,50); 
+        }
+
+        .file {
+            border: 0px solid;
+            border-bottom: 2px solid black;
+        }
+        .trunc {
+            white-space: nowrap; 
+            text-overflow:ellipsis;
+            text-align:justify;
+            overflow: hidden;
+        }
+
+        hr{
+            border-color: grey;
+        }
+
+        .menu {
+            width: 120px;
+            box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
+            position: absolute;
+        }
+        .btn btn-secondarys {
+            list-style: none;
+            padding: 10px 0;
+        }
+        .btn btn-secondary {
+            font-weight: 500;
+            font-size: 14px;
+            padding: 10px 40px 10px 20px;
+            cursor: pointer;
+        }
+        .btn btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        {% include 'modal.html' %}
+        
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a href="{% url 'index' %}" class="navbar-brand">Media Server</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav mr-auto">
+                    {% block nav %}
+                    {% endblock %}
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id='userdropdown' data-toggle="dropdown">
+                            Welcome, {{ user.username }}
+                        </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item text-primary btn" onclick="formModal('Profile','{% url 'profile' user.pk %}?returnUrl={{request.path}}')">Profile</a>
+                        <a class="dropdown-item text-primary btn" onclick="formModal('Change Password','{% url 'password_change' %}?returnUrl={{request.path}}')">Change Password</a>
+                        <a class="dropdown-item text-primary btn" href="{% url 'logout' %}" >Log out</a>
+                    </div>
+                    </li>      
+                    {% else %}
+                    <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Log in</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            
+        </nav>
+    
+        <div id="main">
+            <br>
+            {% block body %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <footer>
+        Copyright &nbsp;  © FurySwordXD
+    </footer>
+
+    <script>
+        function formModal(title, url)
+        {
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function(response)
+                {
+                    showModal({head: title, body: response, url: url});
+                }
+            }); 
+        }
+    </script>
+</body>
+</html>

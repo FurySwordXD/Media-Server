@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+    Title
+{% endblock %}
+
+{% block body %}
+
+    <div class="w3-container w3-content w3-display-middle w3-card-4" style="width:50%">
+        <h3 class="w3-wide w3-text-black w3-center">REGISTER</h3>
+        <hr>
+        <form  method="POST" action="" enctype="multipart/form-data">
+
+            {% csrf_token %}
+            {% include 'form-template.html' %}
+            <div class="w3-container w3-center">
+                <button class="w3-btn w3-black" style="width: 30%" type="submit">Register</button><br><br>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+            

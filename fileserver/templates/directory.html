@@ -1,0 +1,7 @@
+<div class="container-fluid">
+    <div class="">
+        {% for f in folder_map %}
+            / <a class="btn btn-link p-1" href="{% url 'folder-detail' f.id %}">{{f.name}}</a>
+        {% endfor %}
+    </div>
+</div>

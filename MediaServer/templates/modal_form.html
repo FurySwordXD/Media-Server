@@ -1,0 +1,41 @@
+{% load template_tags %}
+
+<div class="container-fluid">
+        <br>
+        <form method="POST" enctype="multipart/form-data" id="modalForm">
+            {% csrf_token %}
+            {% include 'form_template.html' with form=form %}
+            <div class="btn-group" style="width:100%;">
+                <button class="col btn btn-primary" onclick="hideModal()" type="button">Cancel</button>
+                <button class="col btn btn-danger">Submit</button>
+            </div>
+        </form>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("form").attr("action", modalData.url);
+    });
+
+    $("#modalForm").submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);    
+        $.ajax({
+            type: "POST",
+            url: modalData.url,
+            data: formData,
+            success: function(response) {
+                var el = document.createElement('html');
+                el.innerHTML = response;
+                if (el.getElementsByClassName('alert').length > 0)
+                    showModal({'body': response, 'url': modalData.url});
+                else
+                    location.reload();
+                console.log(response);                
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });
+</script>

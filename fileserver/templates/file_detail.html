@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ file }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        {% include 'directory.html' %}
+        
+        {% if file.file_type == 'Video' %}
+            <div class="row">
+                <div class="col-md-7">
+                    <video src="{{url_encoded}}" controls class="p-5" style="width:100%;height: 80vh;">
+                </div>
+                <div class="col-md-5 text-primary">
+                    <br>{{ file }}<br>
+                    <br><a href="{{ file.file.url }}" download><button class="btn btn-outline-primary">Download</button></a>
+                </div>
+            </div>
+        {% elif file.file_type == 'Audio' %}
+            <audio controls style="width:80%;" class="p-5">
+                <source src="{{url_encoded}}">
+            </audio>
+            <div class="p-5 mx-auto">
+                {{ file }}<br>
+                <br><a href="{{ file.file.url }}" download><button class="btn btn-outline-primary">Download</button></a>
+            </div>
+
+        {% elif file.file_type == 'Image' %}
+            <div class="row">
+                <div class="col-md">
+                    <img src="{{ file.file.url }}" class="img-fluid" style="max-width:100%;">
+                </div>
+                <div class="col-md text-primary">
+                    <br>{{ file }}<br>
+                    <br><a href="{{ file.file.url }}" download><button class="btn btn-outline-primary">Download</button></a>
+                </div>
+            </div>   
+        {% elif file.file_type == 'Text' %}
+        <div class="row">
+            <div class="col-md-8">
+                <pre id="data" class="w3-card-4 w3-padding" style="height:90vh;text-overflow:initial;">{{data}}</pre>
+            </div>
+            <div class="col-md-4 text-primary">
+                <br>{{ file }}<br>
+                <br><a href="{{ file.file.url }}" download><button class="btn btn-outline-primary">Download</button></a>
+            </div>   
+        </div>
+        {% else %}
+
+            <div class="w3-padding-large">
+                <br>{{ file }}<br>
+                <br><a href="{{ file.file.url }}" download><button class="w3-btn w3-black">Download</button></a>
+            </div>
+
+        {% endif %}
+    
+    
+
+    </div>
+    <br><br>
+    
+    <script>
+        var text = '{{data}}';
+        text = text.replace(/\n/g, "<br>");
+        $("#data").html(text);
+    </script>
+{% endblock %}
+
+            

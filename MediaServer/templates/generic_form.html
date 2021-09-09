@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container-fluid p-auto">
+<div class="row justify-content-center align-items-center my-auto">
+<form method="POST" class="card col-md-8 col-lg-5 p-3 shadow " enctype="multipart/form-data">
+    {% csrf_token %}
+        <br>
+        <div class="card-body">
+             {% include 'form_template.html' with form=form  %}
+        </div>
+        <button class="btn btn-info">Submit</button>
+</form>
+</div>
+</div>
+{% endblock body %}

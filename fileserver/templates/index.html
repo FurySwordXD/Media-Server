@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}
+Media Server
+{% endblock %}
+
+{% block nav %}
+<a onclick="formModal('Create Folder', '{% url 'add-folder' %}')" class="nav-link">Add Folder</a>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        
+        <div class="row">
+        {% for folder in folders %}
+            <div class="col-md-3 m-2">
+                <a class="btn btn-outline-info" href="{% url 'folder-detail' folder.id %}" style="width:100%">{{ folder.name }}</a>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+
+    
+{% endblock %}
+
+            

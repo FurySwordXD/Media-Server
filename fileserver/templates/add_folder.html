@@ -1,0 +1,12 @@
+
+<h3 class="w3-wide w3-text-black w3-center">Create Folder</h3>
+<span class="w3-button w3-black w3-xlarge w3-hover-red w3-display-topright" onclick="hideModal()">&times;</span>
+<hr>
+<form  method="POST" action="{% url 'add-folder' %}" enctype="multipart/form-data">
+
+    {% csrf_token %}
+    {% include 'form_template.html' with button_text='Create Folder' %}
+
+</form>
+
+            
